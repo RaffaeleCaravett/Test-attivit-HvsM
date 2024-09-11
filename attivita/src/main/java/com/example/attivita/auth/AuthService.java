@@ -24,10 +24,7 @@ public class AuthService {
     JWTTools jwtTools;
 
 
-    public User register(@RequestBody @Validated UserDTO userDTO, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            throw new DTOHasErrorsException(bindingResult.getAllErrors());
-        }
+    public User register(UserDTO userDTO){
         if(userRepository.findByEmail(userDTO.email()).isPresent()){
             throw new EmailAlreadyExistsException("Email " + userDTO.email() + " già in uso.");
         }
@@ -39,10 +36,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Tokens login (@RequestBody @Validated UserLoginDTO userLoginDTO,BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            throw new DTOHasErrorsException(bindingResult.getAllErrors());
-        }
+    public Tokens login (UserLoginDTO userLoginDTO){
         User user = userRepository.findByEmail(userLoginDTO.email()).orElseThrow(()-> new UserNotFoundException("User con email "+ userLoginDTO.email() + " non presente in db."));
         if(bcrypt.matches(userLoginDTO.password(), user.getPassword())){
             return jwtTools.createTokens(user);
@@ -52,7 +46,15 @@ public class AuthService {
 
     public User verifyToken(String accessToken){
         try{
-            jwtTools.verifyToken(accessToken);
+           return jwtTools.verifyToken(accessToken);
+        }catch (Exception e){
+            throw new AccessTokenInvalidException("Il token non è valido.");
+        }
+    }
+    public Tokens verifyRefreshToken(String refreshToken){
+        try{
+            User user = jwtTools.verifyToken(refreshToken);
+            return user.getTokens();
         }catch (Exception e){
             throw new AccessTokenInvalidException("Il token non è valido.");
         }
