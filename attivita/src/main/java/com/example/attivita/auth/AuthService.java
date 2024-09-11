@@ -1,9 +1,6 @@
 package com.example.attivita.auth;
 
-import com.example.attivita.exceptions.DTOHasErrorsException;
-import com.example.attivita.exceptions.EmailAlreadyExistsException;
-import com.example.attivita.exceptions.PasswordMismatchException;
-import com.example.attivita.exceptions.UserNotFoundException;
+import com.example.attivita.exceptions.*;
 import com.example.attivita.payloads.entities.UserDTO;
 import com.example.attivita.payloads.entities.UserLoginDTO;
 import com.example.attivita.security.JWTTools;
@@ -48,8 +45,16 @@ public class AuthService {
         }
         User user = userRepository.findByEmail(userLoginDTO.email()).orElseThrow(()-> new UserNotFoundException("User con email "+ userLoginDTO.email() + " non presente in db."));
         if(bcrypt.matches(userLoginDTO.password(), user.getPassword())){
-            return jwtTools.generateTokens(user.getTokens());
+            return jwtTools.createTokens(user);
         }
         throw new PasswordMismatchException("La password che hai inserito non coincide con quella che abbiamo in Database.");
+    }
+
+    public User verifyToken(String accessToken){
+        try{
+            jwtTools.verifyToken(accessToken);
+        }catch (Exception e){
+            throw new AccessTokenInvalidException("Il token non è valido.");
+        }
     }
 }
