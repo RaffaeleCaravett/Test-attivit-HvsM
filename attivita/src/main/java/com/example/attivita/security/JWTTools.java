@@ -1,5 +1,6 @@
 package com.example.attivita.security;
 
+import com.example.attivita.exceptions.UnauthorizedException;
 import com.example.attivita.tokens.Tokens;
 import com.example.attivita.user.User;
 import com.example.attivita.user.UserRepository;
@@ -55,8 +56,7 @@ public class JWTTools {
             throw new UnauthorizedException("Il token non è valido! Per favore effettua nuovamente il login o refresha la pagina!");
         }
     }
-
-    public Tokens verifyTrasportatoreRefreshToken(String token){
+    public Tokens verifyRefreshToken(String token){
         try {
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
                     .build().parse(token).getBody();
@@ -66,15 +66,9 @@ public class JWTTools {
                     .parseClaimsJws(token)
                     .getBody();
             String userId= claims.getSubject();
-
-            return  this.createTokens(trasportatoreRepository.findById(Long.valueOf(userId)).get());
+            return  this.createTokens(userRepository.findById(Long.valueOf(userId)).get());
         }catch (Exception e){
             throw new UnauthorizedException("Il refresh token non è valido. Accedi nuovamente.");
         }
-    }
-
-    public String extractIdFromToken(String token){
-        return  Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
-                .build().parseClaimsJws(token).getBody().getSubject();
     }
 }
