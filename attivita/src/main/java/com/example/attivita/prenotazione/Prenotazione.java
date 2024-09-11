@@ -1,6 +1,7 @@
 package com.example.attivita.prenotazione;
 
 import com.example.attivita.attivita.Attivita;
+import com.example.attivita.enums.StatoPrenotazione;
 import com.example.attivita.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
