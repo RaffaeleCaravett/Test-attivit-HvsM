@@ -36,4 +36,9 @@ public class UserService {
             throw new BadRequestException(e.getMessage());
         }
     }
+
+    public User findById(long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User con id " + id + " non trovato in Database."));
+        return user;
+    }
 }

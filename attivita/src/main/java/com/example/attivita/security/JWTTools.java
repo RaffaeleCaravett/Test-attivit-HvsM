@@ -71,4 +71,9 @@ public class JWTTools {
             throw new UnauthorizedException("Il refresh token non è valido. Accedi nuovamente.");
         }
     }
+
+    public String extractIdFromToken(String token){
+        return  Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build().parseClaimsJws(token).getBody().getSubject();
+    }
 }
