@@ -47,7 +47,8 @@ public class AuthService {
         }
         User user = userRepository.findByEmail(userLoginDTO.email()).orElseThrow(()-> new UserNotFoundException("User con email "+ userLoginDTO.email() + " non presente in db."));
         if(bcrypt.matches(userLoginDTO.password(), user.getPassword())){
-            return jwtTools.generateTokens(user.getTokens);
+            return jwtTools.generateTokens(user.getTokens());
         }
+        throw new PasswordMismatchException("La password che hai inserito non coincide con quella che abbiamo in Database.");
     }
 }
