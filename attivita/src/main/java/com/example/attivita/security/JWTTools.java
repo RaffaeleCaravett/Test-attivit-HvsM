@@ -2,6 +2,7 @@ package com.example.attivita.security;
 
 import com.example.attivita.exceptions.UnauthorizedException;
 import com.example.attivita.tokens.Tokens;
+import com.example.attivita.tokens.TokensRepository;
 import com.example.attivita.user.User;
 import com.example.attivita.user.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -20,7 +21,8 @@ public class JWTTools {
 
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    TokensRepository tokensRepository;
 
     public Tokens createTokens(User user){
         String accessToken = Jwts.builder().setSubject(String.valueOf(user.getId()))
@@ -33,13 +35,22 @@ public class JWTTools {
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*60 *24 *7))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes())).compact();
 
-        Tokens tokens = new Tokens();
-        tokens.setAccessToken(accessToken);
-        tokens.setRefreshToken(refreshToken);
-        tokens.setUser(user);
-        user.setTokens(tokens);
-
-        return tokens;
+        if(user.getTokens()!=null) {
+            Tokens tokens = user.getTokens();
+            tokens.setAccessToken(accessToken);
+            tokens.setRefreshToken(refreshToken);
+            user.setTokens(tokens);
+            tokensRepository.save(tokens);
+            return tokens;
+        }else{
+            Tokens tokens = new Tokens();
+            tokens.setAccessToken(accessToken);
+            tokens.setRefreshToken(refreshToken);
+            tokens.setUser(user);
+            user.setTokens(tokens);
+            tokensRepository.save(tokens);
+            return tokens;
+        }
     }
     public User verifyToken(String token){
         try {
