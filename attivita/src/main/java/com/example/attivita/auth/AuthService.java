@@ -2,6 +2,7 @@ package com.example.attivita.auth;
 
 import com.example.attivita.exceptions.DTOHasErrorsException;
 import com.example.attivita.exceptions.EmailAlreadyExistsException;
+import com.example.attivita.exceptions.PasswordMismatchException;
 import com.example.attivita.exceptions.UserNotFoundException;
 import com.example.attivita.payloads.entities.UserDTO;
 import com.example.attivita.payloads.entities.UserLoginDTO;
