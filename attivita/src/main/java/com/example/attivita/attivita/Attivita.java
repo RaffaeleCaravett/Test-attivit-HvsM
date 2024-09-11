@@ -1,5 +1,8 @@
 package com.example.attivita.attivita;
 
+import com.example.attivita.categoria.Categoria;
+import com.example.attivita.prenotazione.Prenotazione;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+
 
 @Entity
 @Table(name = "attivita")
@@ -26,5 +30,13 @@ public class Attivita {
     private int oraFine;
     private int postiDisponibili;
     private int postiOccupati;
-
+    @OneToMany(mappedBy = "attivita")
+    @JsonIgnore
+    private List<Prenotazione> prenotazioneList;
+    @ManyToMany
+    @JoinTable(
+            name = "attivita_categorie",
+            joinColumns = @JoinColumn(name = "attivita_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+    private List<Categoria> categoriaList;
 }
