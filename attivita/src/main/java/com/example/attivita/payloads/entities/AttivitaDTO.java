@@ -10,16 +10,12 @@ public record AttivitaDTO(
        String nome,
        @NotEmpty(message = "Luogo vuoto.")
        String luogo,
-       @NotNull(message = "Giorno vuoto.")
-       int giorno,
-       @NotNull(message = "Mese vuoto.")
-       int mese,
-       @NotNull(message = "Anno vuoto.")
-       int anno,
+       @NotNull(message = "Data vuota.")
+       String data,
        @NotNull(message = "Ora inizio vuota.")
-       int oraInizio,
+       String oraInizio,
        @NotNull(message = "Ora fine vuota.")
-       int oraFine,
+       String oraFine,
        @NotNull(message = "Posti disponibili vuoti.")
        int postiDisponibili,
        @NotNull(message = "Inserisci almeno una categoria.")
