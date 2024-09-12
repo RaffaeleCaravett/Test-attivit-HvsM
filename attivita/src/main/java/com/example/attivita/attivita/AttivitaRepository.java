@@ -12,8 +12,8 @@ import java.util.Locale;
 @Repository
 public interface AttivitaRepository extends JpaRepository<Attivita,Long> {
     Attivita findByPrenotazioneList_Id(long id);
-    List<Attivita> findByCategoriaList_Id(long id);
     Page<Attivita> findByCategoriaList_Id(long id, Pageable pageable);
+    Page<Attivita> findByCategoriaList_IdAndNomeContainingAndDisponibilita(long id,String nome,boolean disponibilita, Pageable pageable);
     Page<Attivita> findByDisponibilita(boolean disponibilita, Pageable pageable);
     Page<Attivita> findByNomeContaining(String nome, Pageable pageable);
     Page<Attivita> findByDate(LocalDate localDate,Pageable pageable);
