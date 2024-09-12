@@ -113,6 +113,15 @@ public class AttivitaService {
             throw new BadRequestException(e.getMessage());
         }
     }
+    public Page<Attivita> findByNomeAndDate(String nome,String date, int page, int size, String orderBy,String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+        try {
+            LocalDate localDate = LocalDate.parse(date);
+            return attivitaRepository.findByNomeContainingAndDate(nome,localDate, pageable);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
 
     public Page<Attivita> findByCategoria(long id, int page, int size, String orderBy,String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));

@@ -16,6 +16,7 @@ public interface AttivitaRepository extends JpaRepository<Attivita,Long> {
     Page<Attivita> findByCategoriaList_IdAndNomeContainingAndDisponibilita(long id,String nome,boolean disponibilita, Pageable pageable);
     Page<Attivita> findByDisponibilita(boolean disponibilita, Pageable pageable);
     Page<Attivita> findByNomeContaining(String nome, Pageable pageable);
+    Page<Attivita> findByNomeContainingAndDate(String nome,LocalDate data, Pageable pageable);
     Page<Attivita> findByDate(LocalDate localDate,Pageable pageable);
 
 }

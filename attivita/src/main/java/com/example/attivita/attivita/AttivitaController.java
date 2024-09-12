@@ -40,6 +40,10 @@ public class AttivitaController {
     public Page<Attivita> getByNome(@PathVariable String nome, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
       return attivitaService.findByNome(nome,page,size,orderBy,direction);
     }
+    @GetMapping("/byNomeContainingAndDate/{nome}/{date}")
+    public Page<Attivita> getByNome(@PathVariable String nome, @PathVariable String date, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findByNomeAndDate(nome,date,page,size,orderBy,direction);
+    }
     @GetMapping("/byPrenotazioneId/{id}")
     public Attivita getByPrenotazione(@PathVariable long id){
         return attivitaService.findByPrenotazione(id);
