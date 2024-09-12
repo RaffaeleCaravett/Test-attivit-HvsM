@@ -40,5 +40,29 @@ public class AttivitaController {
     public Page<Attivita> getByNome(@PathVariable String nome, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
       return attivitaService.findByNome(nome,page,size,orderBy,direction);
     }
-    
+    @GetMapping("/byPrenotazioneId/{id}")
+    public Attivita getByPrenotazione(@PathVariable long id){
+        return attivitaService.findByPrenotazione(id);
+    }
+    @GetMapping("/byCategoria/{id}")
+    public Page<Attivita> getByCategoria(@PathVariable long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findByCategoria(id,page,size,orderBy,direction);
+    }
+    @GetMapping("/byCategoriaNomeAndDisponibilita/{id}/{nome}/{disponibilita}")
+    public Page<Attivita> getByCateNomeAndDisp(@PathVariable long id,@PathVariable String nome,@PathVariable boolean disponibilita, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findByCategoriaNomeAndDisponibilita(id,nome,disponibilita,page,size,orderBy,direction);
+    }
+    @GetMapping("/byDisponibilita/{disponibilita}")
+    public Page<Attivita> getByNome(@PathVariable boolean disponibilita, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findByDisponibilità(disponibilita,page,size,orderBy,direction);
+    }
+    @GetMapping("/byData/{data}")
+    public Page<Attivita> getByData(@PathVariable String data, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findByData(data,page,size,orderBy,direction);
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    public boolean deleteById(@PathVariable long id){
+        return attivitaService.deleteById(id);
+    }
 }
