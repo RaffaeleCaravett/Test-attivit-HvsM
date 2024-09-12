@@ -5,6 +5,10 @@ import com.example.attivita.categoria.CategoriaRepository;
 import com.example.attivita.exceptions.AttivitaNotFoundException;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.CategoriaNotFoundException;
+import com.example.attivita.immagine.FileData;
+import com.example.attivita.immagine.FileDataRepository;
+import com.example.attivita.immagine.Immagine;
+import com.example.attivita.immagine.ImmagineRepository;
 import com.example.attivita.payloads.entities.AttivitaDTO;
 import com.example.attivita.prenotazione.Prenotazione;
 import com.example.attivita.prenotazione.PrenotazioneRepository;
@@ -29,60 +33,72 @@ public class AttivitaService {
     CategoriaRepository categoriaRepository;
     @Autowired
     PrenotazioneRepository prenotazioneRepository;
+    @Autowired
+    ImmagineRepository immagineRepository;
+
+    @Autowired
+    FileDataRepository fileDataRepository;
+    private final String folder_path = "C:\\Users\\Utente\\Desktop\\Progetti\\Attività\\attivita\\docs\\myFiles";
+
     public Attivita save(AttivitaDTO attivitaDTO, MultipartFile file) {
-            Attivita attivita = new Attivita();
+        Attivita attivita = new Attivita();
 
-            attivita.setDate(LocalDate.parse(attivitaDTO.data()));
-            attivita.setNome(attivitaDTO.nome());
-            attivita.setLuogo(attivitaDTO.luogo());
-            attivita.setDisponibilita(true);
+        attivita.setDate(LocalDate.parse(attivitaDTO.data()));
+        attivita.setNome(attivitaDTO.nome());
+        attivita.setLuogo(attivitaDTO.luogo());
+        attivita.setDisponibilita(true);
 
-            List<Categoria> categoriaList = new ArrayList<>();
-            for (long l : attivitaDTO.categorie_id()) {
-                Categoria categoria = categoriaRepository.findById(l).orElseThrow(() -> new CategoriaNotFoundException("Categoria con id " + l + " non trovata in db."));
-                categoriaList.add(categoria);
-            }
-            attivita.setCategoriaList(categoriaList);
-            attivita.setOraInizio(LocalTime.parse(attivitaDTO.oraInizio()));
-            attivita.setOraFine(LocalTime.parse(attivitaDTO.oraFine()));
-            attivita.setPostiDisponibili(attivitaDTO.postiDisponibili());
-            attivita.setPostiOccupati(0);
+        List<Categoria> categoriaList = new ArrayList<>();
+        for (long l : attivitaDTO.categorie_id()) {
+            Categoria categoria = categoriaRepository.findById(l).orElseThrow(() -> new CategoriaNotFoundException("Categoria con id " + l + " non trovata in db."));
+            categoriaList.add(categoria);
+        }
+        attivita.setCategoriaList(categoriaList);
+        attivita.setOraInizio(LocalTime.parse(attivitaDTO.oraInizio()));
+        attivita.setOraFine(LocalTime.parse(attivitaDTO.oraFine()));
+        attivita.setPostiDisponibili(attivitaDTO.postiDisponibili());
+        attivita.setPostiOccupati(0);
+        String filePath = this.folder_path + file.getOriginalFilename();
+        FileData fileData = fileDataRepository.save(FileData.builder().name(file.getOriginalFilename()).type(file.getContentType()).filePath(filePath).build());
+        System.out.println("File uploaded succesfuy : " + filePath);
+        Immagine immagine = immagineRepository.save(Immagine.builder().name(file.getOriginalFilename()).type(file.getContentType()).filePath(ImageUtils))
 
-            return attivitaRepository.save(attivita);
+        return attivitaRepository.save(attivita);
 
     }
 
     public Attivita putById(long id, AttivitaDTO attivitaDTO) {
-            Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+        Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
 
-            attivita.setDate(LocalDate.parse(attivitaDTO.data()));
-            attivita.setNome(attivitaDTO.nome());
-            attivita.setLuogo(attivitaDTO.luogo());
-            attivita.setDisponibilita(true);
+        attivita.setDate(LocalDate.parse(attivitaDTO.data()));
+        attivita.setNome(attivitaDTO.nome());
+        attivita.setLuogo(attivitaDTO.luogo());
+        attivita.setDisponibilita(true);
 
-            List<Categoria> categoriaList = new ArrayList<>();
-            for (long l : attivitaDTO.categorie_id()) {
-                Categoria categoria = categoriaRepository.findById(l).orElseThrow(() -> new CategoriaNotFoundException("Categoria con id " + l + " non trovata in db."));
-                categoriaList.add(categoria);
-            }
-            attivita.setCategoriaList(categoriaList);
-            attivita.setOraInizio(LocalTime.parse(attivitaDTO.oraInizio()));
-            attivita.setOraFine(LocalTime.parse(attivitaDTO.oraFine()));
-            attivita.setPostiDisponibili(attivitaDTO.postiDisponibili());
-            attivita.setPostiOccupati(0);
+        List<Categoria> categoriaList = new ArrayList<>();
+        for (long l : attivitaDTO.categorie_id()) {
+            Categoria categoria = categoriaRepository.findById(l).orElseThrow(() -> new CategoriaNotFoundException("Categoria con id " + l + " non trovata in db."));
+            categoriaList.add(categoria);
+        }
+        attivita.setCategoriaList(categoriaList);
+        attivita.setOraInizio(LocalTime.parse(attivitaDTO.oraInizio()));
+        attivita.setOraFine(LocalTime.parse(attivitaDTO.oraFine()));
+        attivita.setPostiDisponibili(attivitaDTO.postiDisponibili());
+        attivita.setPostiOccupati(0);
 
-            return attivitaRepository.save(attivita);
+        return attivitaRepository.save(attivita);
 
     }
-    public Attivita putImageById(long id,MultipartFile file){
-            Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+
+    public Attivita putImageById(long id, MultipartFile file) {
+        Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
 
     }
 
     public boolean deleteById(long id) {
         try {
             Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
-            for(Prenotazione prenotazione : attivita.getPrenotazioneList()){
+            for (Prenotazione prenotazione : attivita.getPrenotazioneList()) {
                 prenotazioneRepository.deleteById(prenotazione.getId());
             }
             attivitaRepository.deleteById(id);
@@ -92,8 +108,8 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByDisponibilità(boolean disponibilita, int page, int size, String orderBy,String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+    public Page<Attivita> findByDisponibilità(boolean disponibilita, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
             return attivitaRepository.findByDisponibilita(disponibilita, pageable);
         } catch (Exception e) {
@@ -101,8 +117,8 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByData(String data, int page, int size, String orderBy,String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+    public Page<Attivita> findByData(String data, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
             LocalDate localDate = LocalDate.parse(data);
             return attivitaRepository.findByDate(localDate, pageable);
@@ -111,26 +127,27 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByNome(String nome, int page, int size, String orderBy,String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+    public Page<Attivita> findByNome(String nome, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
             return attivitaRepository.findByNomeContaining(nome, pageable);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
-    public Page<Attivita> findByNomeAndDate(String nome,String date, int page, int size, String orderBy,String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+
+    public Page<Attivita> findByNomeAndDate(String nome, String date, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
             LocalDate localDate = LocalDate.parse(date);
-            return attivitaRepository.findByNomeContainingAndDate(nome,localDate, pageable);
+            return attivitaRepository.findByNomeContainingAndDate(nome, localDate, pageable);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
-    public Page<Attivita> findByCategoria(long id, int page, int size, String orderBy,String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+    public Page<Attivita> findByCategoria(long id, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
             return attivitaRepository.findByCategoriaList_Id(id, pageable);
         } catch (Exception e) {
@@ -145,15 +162,17 @@ public class AttivitaService {
             throw new BadRequestException(e.getMessage());
         }
     }
-    public Page<Attivita> findByCategoriaNomeAndDisponibilita(long id, String nome, boolean disponibilita,int page, int size, String orderBy,String direction){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
+
+    public Page<Attivita> findByCategoriaNomeAndDisponibilita(long id, String nome, boolean disponibilita, int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
         try {
-            return attivitaRepository.findByCategoriaList_IdAndNomeContainingAndDisponibilita(id,nome,disponibilita,pageable);
+            return attivitaRepository.findByCategoriaList_IdAndNomeContainingAndDisponibilita(id, nome, disponibilita, pageable);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
-    public Attivita findById(long id){
-        return attivitaRepository.findById(id).orElseThrow(()->new AttivitaNotFoundException("Attività con id "+ id + " non trovata in db."));
+
+    public Attivita findById(long id) {
+        return attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
     }
 }
