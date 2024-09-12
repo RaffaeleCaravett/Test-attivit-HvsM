@@ -21,7 +21,7 @@ public class Immagine {
     @Lob
     @Column(name = "imagedata",length = 1000)
     private byte[] imageData;
-    @OneToOne
+    @OneToOne(fetch=FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "attivita_id")
     private Attivita attivita;

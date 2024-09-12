@@ -5,10 +5,7 @@ import com.example.attivita.categoria.CategoriaRepository;
 import com.example.attivita.exceptions.AttivitaNotFoundException;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.CategoriaNotFoundException;
-import com.example.attivita.immagine.FileData;
-import com.example.attivita.immagine.FileDataRepository;
-import com.example.attivita.immagine.Immagine;
-import com.example.attivita.immagine.ImmagineRepository;
+import com.example.attivita.immagine.*;
 import com.example.attivita.payloads.entities.AttivitaDTO;
 import com.example.attivita.prenotazione.Prenotazione;
 import com.example.attivita.prenotazione.PrenotazioneRepository;
@@ -67,9 +64,14 @@ public class AttivitaService {
         file.transferTo(new File(filePath));
         System.out.println("File uploaded succesfuy : " + filePath);
 
-        return attivitaRepository.save(attivita);
-
+        Immagine immagine = immagineRepository.save(
+                Immagine.builder().name(file.getOriginalFilename()).type(file.getContentType()).imageData(ImageUtils.compressImage(file.getBytes())).build()
+        );
+        attivitaRepository.save(attivita);
+        immagine.setAttivita(attivita);
+        return attivita;
     }
+
     public byte[] downloadFileFromName(String name) throws IOException {
         Optional<FileData> fileData = fileDataRepository.findByName(name);
         String filePath = fileData.get().getFilePath();
@@ -100,9 +102,14 @@ public class AttivitaService {
 
     }
 
-    public Attivita putImageById(long id, MultipartFile file) {
+    public Attivita putImageById(long id, MultipartFile file) throws IOException {
         Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
-
+        Immagine immagine = immagineRepository.save(
+                Immagine.builder().name(file.getOriginalFilename()).type(file.getContentType()).imageData(ImageUtils.compressImage(file.getBytes())).build()
+        );
+        attivitaRepository.save(attivita);
+        immagine.setAttivita(attivita);
+        return attivita;
     }
 
     public boolean deleteById(long id) {

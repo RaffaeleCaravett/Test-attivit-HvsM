@@ -34,7 +34,7 @@ public class Attivita {
     private int postiDisponibili;
     private int postiOccupati;
     private boolean disponibilita;
-    @OneToOne(mappedBy = "attivita")
+    @OneToOne(mappedBy = "attivita",fetch=FetchType.EAGER)
     private Immagine immagine;
     @OneToMany(mappedBy = "attivita",fetch = FetchType.LAZY)
     @JsonIgnore

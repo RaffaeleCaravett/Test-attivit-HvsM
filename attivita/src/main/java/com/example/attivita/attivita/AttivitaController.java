@@ -20,7 +20,7 @@ public class AttivitaController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult, MultipartFile file) throws IOException {
+    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult,@RequestParam("image") MultipartFile file) throws IOException {
         if(bindingResult.hasErrors()){
             throw new DTOHasErrorsException(bindingResult.getAllErrors());
         }
@@ -36,7 +36,7 @@ public class AttivitaController {
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita putImageById(@PathVariable long id, MultipartFile file){
+    public Attivita putImageById(@PathVariable long id, @RequestParam("image") MultipartFile file) throws IOException {
 
         return attivitaService.putImageById(id,file);
     }
