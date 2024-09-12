@@ -31,6 +31,7 @@ public class Attivita {
     private LocalTime oraFine;
     private int postiDisponibili;
     private int postiOccupati;
+    private boolean disponibilita;
     @OneToMany(mappedBy = "attivita")
     @JsonIgnore
     private List<Prenotazione> prenotazioneList;
