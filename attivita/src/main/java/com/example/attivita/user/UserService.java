@@ -1,5 +1,6 @@
 package com.example.attivita.user;
 
+import com.example.attivita.enums.Role;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.EmailAlreadyExistsException;
 import com.example.attivita.exceptions.UserNotFoundException;

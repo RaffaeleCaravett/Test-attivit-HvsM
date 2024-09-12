@@ -86,8 +86,8 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByDisponibilità(boolean disponibilita, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+    public Page<Attivita> findByDisponibilità(boolean disponibilita, int page, int size, String orderBy,String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
         try {
             return attivitaRepository.findByDisponibilita(disponibilita, pageable);
         } catch (Exception e) {
@@ -95,8 +95,8 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByData(String data, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+    public Page<Attivita> findByData(String data, int page, int size, String orderBy,String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
         try {
             LocalDate localDate = LocalDate.parse(data);
             return attivitaRepository.findByDate(localDate, pageable);
@@ -105,17 +105,17 @@ public class AttivitaService {
         }
     }
 
-    public Page<Attivita> findByNome(String nome, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+    public Page<Attivita> findByNome(String nome, int page, int size, String orderBy,String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
         try {
-            return attivitaRepository.findByNomeContaining(nome, pageable)
+            return attivitaRepository.findByNomeContaining(nome, pageable);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
-    public Page<Attivita> findByCategoria(long id, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+    public Page<Attivita> findByCategoria(long id, int page, int size, String orderBy,String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
         try {
             return attivitaRepository.findByCategoriaList_Id(id, pageable);
         } catch (Exception e) {
@@ -130,8 +130,8 @@ public class AttivitaService {
             throw new BadRequestException(e.getMessage());
         }
     }
-    public Page<Attivita> findByCategoriaNomeAndDisponibilita(long id, String nome, boolean disponibilita,int page, int size, String orderBy){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+    public Page<Attivita> findByCategoriaNomeAndDisponibilita(long id, String nome, boolean disponibilita,int page, int size, String orderBy,String direction){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction),orderBy));
         try {
             return attivitaRepository.findByCategoriaList_IdAndNomeContainingAndDisponibilita(id,nome,disponibilita,pageable);
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.example.attivita.auth;
 
+import com.example.attivita.enums.Role;
 import com.example.attivita.exceptions.*;
 import com.example.attivita.payloads.entities.UserDTO;
 import com.example.attivita.payloads.entities.UserLoginDTO;
@@ -33,6 +34,7 @@ public class AuthService {
         user.setCognome(userDTO.cognome());
         user.setEmail(userDTO.email());
         user.setPassword(bcrypt.encode(userDTO.password()));
+        user.setRole(Role.user);
         return userRepository.save(user);
     }
 
