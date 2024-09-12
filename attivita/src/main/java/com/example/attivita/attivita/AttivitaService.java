@@ -6,6 +6,8 @@ import com.example.attivita.exceptions.AttivitaNotFoundException;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.CategoriaNotFoundException;
 import com.example.attivita.payloads.entities.AttivitaDTO;
+import com.example.attivita.prenotazione.Prenotazione;
+import com.example.attivita.prenotazione.PrenotazioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +26,8 @@ public class AttivitaService {
     AttivitaRepository attivitaRepository;
     @Autowired
     CategoriaRepository categoriaRepository;
-
+    @Autowired
+    PrenotazioneRepository prenotazioneRepository;
     public Attivita save(AttivitaDTO attivitaDTO) {
         try {
             Attivita attivita = new Attivita();
@@ -79,6 +82,10 @@ public class AttivitaService {
 
     public boolean deleteById(long id) {
         try {
+            Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+            for(Prenotazione prenotazione : attivita.getPrenotazioneList()){
+                prenotazioneRepository.deleteById(prenotazione.getId());
+            }
             attivitaRepository.deleteById(id);
             return true;
         } catch (Exception e) {

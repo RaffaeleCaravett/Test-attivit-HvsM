@@ -5,6 +5,8 @@ import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.EmailAlreadyExistsException;
 import com.example.attivita.exceptions.UserNotFoundException;
 import com.example.attivita.payloads.entities.UserDTO;
+import com.example.attivita.prenotazione.Prenotazione;
+import com.example.attivita.prenotazione.PrenotazioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder bcrypt;
+    @Autowired
+    PrenotazioneRepository prenotazioneRepository;
 
     public User putById(long id, UserDTO userDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User con id " + id + " non trovato in Database."));
@@ -31,6 +35,11 @@ public class UserService {
 
     public boolean deleteById(long id){
         try {
+
+            User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User con id " + id + " non trovato in Database."));
+            for(Prenotazione prenotazione : user.getPrenotazioneList()){
+                prenotazioneRepository.deleteById(prenotazione.getId());
+            }
             userRepository.deleteById(id);
             return true;
         }catch (Exception e){

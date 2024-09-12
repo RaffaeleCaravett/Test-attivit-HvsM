@@ -32,10 +32,10 @@ public class Attivita {
     private int postiDisponibili;
     private int postiOccupati;
     private boolean disponibilita;
-    @OneToMany(mappedBy = "attivita")
+    @OneToMany(mappedBy = "attivita",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Prenotazione> prenotazioneList;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "attivita_categorie",
             joinColumns = @JoinColumn(name = "attivita_id"),

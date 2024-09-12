@@ -20,10 +20,10 @@ public class Prenotazione {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "attivita_id")
     private Attivita attivita;
     private StatoPrenotazione statoPrenotazione;

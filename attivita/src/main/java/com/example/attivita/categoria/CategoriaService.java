@@ -1,5 +1,7 @@
 package com.example.attivita.categoria;
 
+import com.example.attivita.attivita.Attivita;
+import com.example.attivita.attivita.AttivitaRepository;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.CategoriaAlreadyExistsException;
 import com.example.attivita.exceptions.CategoriaNotFoundException;
@@ -8,6 +10,7 @@ import com.example.attivita.payloads.entities.CategoriaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,6 +18,8 @@ public class CategoriaService {
 
     @Autowired
     CategoriaRepository categoriaRepository;
+    @Autowired
+    AttivitaRepository attivitaRepository;
 
     public Categoria save(CategoriaDTO categoriaDTO){
         if(categoriaRepository.findByNome(categoriaDTO.nome()).isPresent()){
@@ -34,6 +39,12 @@ public class CategoriaService {
     }
     public boolean deleteById(long id){
         try {
+            Categoria categoria = categoriaRepository.findById(id).orElseThrow(()->  new CategoriaNotFoundException("Categoria con id "+ id + " non trovata in db."));
+            List<Attivita> attivitaList = new ArrayList<>(categoria.getAttivitaList());
+            for(Attivita a : attivitaList){
+                a.getCategoriaList().remove(categoria);
+                attivitaRepository.save(a);
+            }
             categoriaRepository.deleteById(id);
             return true;
         }catch (Exception e){

@@ -31,10 +31,10 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private Role role;
-    @OneToOne
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "tokens_id")
     private Tokens tokens;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Prenotazione> prenotazioneList;
     @Override
