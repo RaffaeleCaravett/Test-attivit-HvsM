@@ -1,7 +1,9 @@
 package com.example.attivita.user;
 
 import com.example.attivita.enums.Role;
+import com.example.attivita.prenotazione.Prenotazione;
 import com.example.attivita.tokens.Tokens;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +34,9 @@ public class User implements UserDetails {
     @OneToOne
     @JoinColumn(name = "tokens_id")
     private Tokens tokens;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Prenotazione> prenotazioneList;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.role.name()));

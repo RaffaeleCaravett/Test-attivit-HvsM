@@ -3,6 +3,7 @@ package com.example.attivita.prenotazione;
 import com.example.attivita.attivita.Attivita;
 import com.example.attivita.enums.StatoPrenotazione;
 import com.example.attivita.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
