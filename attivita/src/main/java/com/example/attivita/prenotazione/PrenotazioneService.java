@@ -1,5 +1,6 @@
 package com.example.attivita.prenotazione;
 
+import com.example.attivita.attivita.Attivita;
 import com.example.attivita.attivita.AttivitaRepository;
 import com.example.attivita.enums.StatoPrenotazione;
 import com.example.attivita.exceptions.*;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -26,34 +29,38 @@ public class PrenotazioneService {
 
     public Prenotazione save(PrenotazioneDTO prenotazioneDTO) {
         Prenotazione prenotazione = new Prenotazione();
-
+        Attivita attivita = attivitaRepository.findById(prenotazioneDTO.attivita_id()).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + prenotazioneDTO.attivita_id() + " non trovata in db."));
         Optional<Prenotazione> prenotazione1 = prenotazioneRepository.findByUser_IdAndAttivita_IdAndStatoPrenotazione(prenotazioneDTO.user_id(), prenotazioneDTO.attivita_id(), StatoPrenotazione.attiva);
         if (prenotazione1.isPresent()) {
             throw new PrenotazioneAlreadyExistsException("Prenotazione già esistente in db.");
         }
         prenotazione.setStatoPrenotazione(StatoPrenotazione.attiva);
         prenotazione.setUser(userRepository.findById(prenotazioneDTO.user_id()).orElseThrow(() -> new UserNotFoundException("User con id " + prenotazioneDTO.user_id() + " non trovato in Database.")));
-        prenotazione.setAttivita(attivitaRepository.findById(prenotazioneDTO.attivita_id()).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + prenotazioneDTO.attivita_id() + " non trovata in db.")));
-        return prenotazioneRepository.save(prenotazione);
-    }
+        prenotazione.setAttivita(attivita);
 
-    public Prenotazione putById(long pId, long userId, PrenotazioneDTO prenotazioneDTO) {
-        Prenotazione prenotazione = prenotazioneRepository.findById(pId).orElseThrow(() -> new PrenotazioneNotFoundException("Prenotazione con id " + pId + " non trovata in db."));
-        if (prenotazione.getUser().getId() == userId) {
-            if (prenotazioneDTO.stato() != null) {
-                prenotazione.setStatoPrenotazione(StatoPrenotazione.valueOf(prenotazioneDTO.stato()));
-            }
-            prenotazione.setUser(userRepository.findById(prenotazioneDTO.user_id()).orElseThrow(() -> new UserNotFoundException("User con id " + prenotazioneDTO.user_id() + " non trovato in Database.")));
-            prenotazione.setAttivita(attivitaRepository.findById(prenotazioneDTO.attivita_id()).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + prenotazioneDTO.attivita_id() + " non trovata in db.")));
-            return prenotazioneRepository.save(prenotazione);
-        } else {
-            throw new AccessDeniedException("Non hai effettuato questa prenotazione.");
+        if(attivita.getDate().isBefore(LocalDate.now())||attivita.getDate().isEqual(LocalDate.now())&&attivita.getOraInizio().isBefore(LocalTime.now())){
+            throw new AttivitaHasPassedException("Non è più possibile prenotare per questa attività");
+        }else if(attivita.getPostiDisponibili()==attivita.getPostiOccupati()){
+            throw new AttivitaHasPassedException("Non è più possibile prenotare per questa attività");
+        }else{
+            attivita.setPostiOccupati(attivita.getPostiOccupati()+1);
         }
+
+        return prenotazioneRepository.save(prenotazione);
     }
 
     public boolean delete(long uId, long id) {
         Optional<Prenotazione> prenotazione = prenotazioneRepository.findById(id);
+
         if (prenotazione.isPresent() && prenotazione.get().getUser().getId() == uId) {
+            Attivita attivita = attivitaRepository.findById(prenotazione.get().getAttivita().getId()).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + prenotazione.get().getAttivita().getId() + " non trovata in db."));
+            if(attivita.getDate().isBefore(LocalDate.now())||attivita.getDate().isEqual(LocalDate.now())&&attivita.getOraInizio().isBefore(LocalTime.now())){
+                System.out.println("Attività has passed.");
+            }else if(attivita.getPostiDisponibili()==attivita.getPostiOccupati()){
+                System.out.println("Attività has passed.");
+            }else{
+                attivita.setPostiOccupati(attivita.getPostiOccupati()-1);
+            }
             prenotazioneRepository.delete(prenotazione.get());
             return true;
         } else {
