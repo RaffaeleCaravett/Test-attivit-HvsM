@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -26,8 +27,8 @@ public class Attivita {
     private String nome;
     private String luogo;
     private LocalDate date;
-    private int oraInizio;
-    private int oraFine;
+    private LocalTime oraInizio;
+    private LocalTime oraFine;
     private int postiDisponibili;
     private int postiOccupati;
     @OneToMany(mappedBy = "attivita")
