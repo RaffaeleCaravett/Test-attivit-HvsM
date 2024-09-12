@@ -20,10 +20,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AttivitaService {
@@ -40,7 +44,7 @@ public class AttivitaService {
     FileDataRepository fileDataRepository;
     private final String folder_path = "C:\\Users\\Utente\\Desktop\\Progetti\\Attività\\attivita\\docs\\myFiles";
 
-    public Attivita save(AttivitaDTO attivitaDTO, MultipartFile file) {
+    public Attivita save(AttivitaDTO attivitaDTO, MultipartFile file) throws IOException {
         Attivita attivita = new Attivita();
 
         attivita.setDate(LocalDate.parse(attivitaDTO.data()));
@@ -60,11 +64,17 @@ public class AttivitaService {
         attivita.setPostiOccupati(0);
         String filePath = this.folder_path + file.getOriginalFilename();
         FileData fileData = fileDataRepository.save(FileData.builder().name(file.getOriginalFilename()).type(file.getContentType()).filePath(filePath).build());
+        file.transferTo(new File(filePath));
         System.out.println("File uploaded succesfuy : " + filePath);
-        Immagine immagine = immagineRepository.save(Immagine.builder().name(file.getOriginalFilename()).type(file.getContentType()).filePath(ImageUtils))
 
         return attivitaRepository.save(attivita);
 
+    }
+    public byte[] downloadFileFromName(String name) throws IOException {
+        Optional<FileData> fileData = fileDataRepository.findByName(name);
+        String filePath = fileData.get().getFilePath();
+        byte[] image = Files.readAllBytes(new File(filePath).toPath());
+        return image;
     }
 
     public Attivita putById(long id, AttivitaDTO attivitaDTO) {

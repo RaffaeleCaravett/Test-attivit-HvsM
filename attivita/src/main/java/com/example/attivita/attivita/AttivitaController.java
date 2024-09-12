@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/attivita")
 public class AttivitaController {
@@ -18,7 +20,7 @@ public class AttivitaController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult, MultipartFile file){
+    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult, MultipartFile file) throws IOException {
         if(bindingResult.hasErrors()){
             throw new DTOHasErrorsException(bindingResult.getAllErrors());
         }
@@ -75,5 +77,9 @@ public class AttivitaController {
     @PreAuthorize("hasAuthority('admin')")
     public boolean deleteById(@PathVariable long id){
         return attivitaService.deleteById(id);
+    }
+    @GetMapping("/downloadFileFromFolder/{name}")
+    public byte[] downloadFile(@PathVariable String name) throws IOException {
+        return attivitaService.downloadFileFromName(name);
     }
 }
