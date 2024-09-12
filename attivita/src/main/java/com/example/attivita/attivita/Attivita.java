@@ -1,6 +1,7 @@
 package com.example.attivita.attivita;
 
 import com.example.attivita.categoria.Categoria;
+import com.example.attivita.immagine.Immagine;
 import com.example.attivita.prenotazione.Prenotazione;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,6 +34,8 @@ public class Attivita {
     private int postiDisponibili;
     private int postiOccupati;
     private boolean disponibilita;
+    @OneToOne(mappedBy = "attivita")
+    private Immagine immagine;
     @OneToMany(mappedBy = "attivita",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Prenotazione> prenotazioneList;

@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,8 +29,7 @@ public class AttivitaService {
     CategoriaRepository categoriaRepository;
     @Autowired
     PrenotazioneRepository prenotazioneRepository;
-    public Attivita save(AttivitaDTO attivitaDTO) {
-        try {
+    public Attivita save(AttivitaDTO attivitaDTO, MultipartFile file) {
             Attivita attivita = new Attivita();
 
             attivita.setDate(LocalDate.parse(attivitaDTO.data()));
@@ -49,13 +49,10 @@ public class AttivitaService {
             attivita.setPostiOccupati(0);
 
             return attivitaRepository.save(attivita);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+
     }
 
     public Attivita putById(long id, AttivitaDTO attivitaDTO) {
-        try {
             Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
 
             attivita.setDate(LocalDate.parse(attivitaDTO.data()));
@@ -75,9 +72,11 @@ public class AttivitaService {
             attivita.setPostiOccupati(0);
 
             return attivitaRepository.save(attivita);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+
+    }
+    public Attivita putImageById(long id,MultipartFile file){
+            Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+
     }
 
     public boolean deleteById(long id) {

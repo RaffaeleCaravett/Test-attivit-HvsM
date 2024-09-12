@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/attivita")
@@ -17,11 +18,11 @@ public class AttivitaController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult){
+    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult, MultipartFile file){
         if(bindingResult.hasErrors()){
             throw new DTOHasErrorsException(bindingResult.getAllErrors());
         }
-        return attivitaService.save(attivitaDTO);
+        return attivitaService.save(attivitaDTO,file);
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
@@ -30,6 +31,12 @@ public class AttivitaController {
             throw new DTOHasErrorsException(bindingResult.getAllErrors());
         }
         return attivitaService.putById(id,attivitaDTO);
+    }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    public Attivita putImageById(@PathVariable long id, MultipartFile file){
+
+        return attivitaService.putImageById(id,file);
     }
     @GetMapping("/{id}")
     public Attivita getById(@PathVariable long id){
