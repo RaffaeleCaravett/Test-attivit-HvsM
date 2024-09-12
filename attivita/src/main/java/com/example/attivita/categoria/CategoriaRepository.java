@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria,Long> {
     Optional<Categoria> findByNome(String nome);
+    List<Categoria> findByNomeContaining(String nome);
     List<Categoria> findByAttivitaList_Id(long id);
 }
