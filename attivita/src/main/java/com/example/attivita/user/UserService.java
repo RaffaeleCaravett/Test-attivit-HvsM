@@ -16,8 +16,6 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    PasswordEncoder bcrypt;
-    @Autowired
     PrenotazioneRepository prenotazioneRepository;
 
     public User putById(long id, UserDTO userDTO) {
@@ -28,7 +26,6 @@ public class UserService {
         user.setNome(userDTO.nome());
         user.setCognome(userDTO.cognome());
         user.setEmail(userDTO.email());
-        user.setPassword(bcrypt.encode(userDTO.password()));
 
         return userRepository.save(user);
     }

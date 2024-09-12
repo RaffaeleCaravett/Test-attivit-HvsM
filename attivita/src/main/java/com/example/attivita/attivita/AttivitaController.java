@@ -34,7 +34,7 @@ public class AttivitaController {
         }
         return attivitaService.putById(id,attivitaDTO);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/immagine/{id}")
     @PreAuthorize("hasAuthority('admin')")
     public Attivita putImageById(@PathVariable long id, @RequestParam("image") MultipartFile file) throws IOException {
 
