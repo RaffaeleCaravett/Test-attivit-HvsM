@@ -3,6 +3,7 @@ package com.example.attivita.prenotazione;
 import com.example.attivita.attivita.AttivitaRepository;
 import com.example.attivita.enums.StatoPrenotazione;
 import com.example.attivita.exceptions.AttivitaNotFoundException;
+import com.example.attivita.exceptions.PrenotazioneAlreadyExistsException;
 import com.example.attivita.exceptions.UserNotFoundException;
 import com.example.attivita.payloads.entities.PrenotazioneDTO;
 import com.example.attivita.user.UserRepository;
