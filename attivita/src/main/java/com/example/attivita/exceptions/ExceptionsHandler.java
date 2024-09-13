@@ -5,6 +5,7 @@ import com.example.attivita.payloads.errors.ErrorsWithListDTO;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -158,6 +159,17 @@ public class ExceptionsHandler {
         }
 
     }
+    @ExceptionHandler(PrenotazioneAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)  // 404
+    public ErrorsWithListDTO handleDtoHasErrors(PrenotazioneAlreadyExistsException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+
+    }
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
     public ErrorsDTO handleAuthorizationDenied(AuthorizationDeniedException e) {
@@ -195,12 +207,12 @@ public class ExceptionsHandler {
         e.printStackTrace();
         return new ErrorsDTO(e.getMessage(), new Date());
     }
-    @ExceptionHandler(Exception.class)
-    public ErrorsDTO handleGeneric(IncorrectResultSizeDataAccessException e) {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ErrorsDTO handleGeneric(HttpMessageNotReadableException e) {
         e.printStackTrace();
         return new ErrorsDTO(e.getMessage(), new Date());
     }
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
     public ErrorsDTO handleGeneric(Exception e) {
         e.printStackTrace();
         return new ErrorsDTO("Problema lato server...giuro che lo risolveremo presto", new Date());
