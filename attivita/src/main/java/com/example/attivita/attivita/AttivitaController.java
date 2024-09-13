@@ -20,7 +20,7 @@ public class AttivitaController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita save(@RequestBody @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult,@RequestParam("image") MultipartFile file) throws IOException {
+    public Attivita save(@ModelAttribute @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult,@RequestParam("image") MultipartFile file) throws IOException {
         if(bindingResult.hasErrors()){
             throw new DTOHasErrorsException(bindingResult.getAllErrors());
         }
