@@ -69,6 +69,7 @@ public class AttivitaService {
         );
         attivitaRepository.save(attivita);
         immagine.setAttivita(attivita);
+        attivita.setImageData(ImageUtils.decompressImage(immagine.getImageData()));
         return attivita;
     }
 
