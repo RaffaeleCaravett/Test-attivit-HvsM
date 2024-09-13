@@ -48,4 +48,8 @@ public class PrenotazioneController {
     public boolean deleteById(@PathVariable long id, @PathVariable long userId){
         return prenotazioneService.delete(userId,id);
     }
+    @DeleteMapping("/all/{userId}")
+    public Long deleteAllByUId(@PathVariable long userId){
+        return prenotazioneService.deleteAllByUId(userId);
+    }
 }

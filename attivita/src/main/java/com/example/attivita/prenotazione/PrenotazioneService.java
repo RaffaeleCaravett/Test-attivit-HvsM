@@ -97,5 +97,8 @@ public class PrenotazioneService {
 
         return prenotazioneRepository.findByStatoPrenotazione(statoPrenotazione1,pageable);
     }
+    public Long deleteAllByUId(long userId){
+        return prenotazioneRepository.deleteByUser_Id(userId);
+    }
 
 }

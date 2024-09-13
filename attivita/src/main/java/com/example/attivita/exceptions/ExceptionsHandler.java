@@ -212,6 +212,11 @@ public class ExceptionsHandler {
         e.printStackTrace();
         return new ErrorsDTO(e.getMessage(), new Date());
     }
+    @ExceptionHandler(IllegalStateException.class)
+    public ErrorsDTO handleGeneric(IllegalStateException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
         @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
     public ErrorsDTO handleGeneric(Exception e) {
         e.printStackTrace();
