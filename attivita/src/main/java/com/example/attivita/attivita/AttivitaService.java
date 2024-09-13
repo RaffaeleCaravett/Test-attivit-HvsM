@@ -2,6 +2,7 @@ package com.example.attivita.attivita;
 
 import com.example.attivita.categoria.Categoria;
 import com.example.attivita.categoria.CategoriaRepository;
+import com.example.attivita.exceptions.AttivitaHasPassedException;
 import com.example.attivita.exceptions.AttivitaNotFoundException;
 import com.example.attivita.exceptions.BadRequestException;
 import com.example.attivita.exceptions.CategoriaNotFoundException;
@@ -44,7 +45,11 @@ public class AttivitaService {
     public Attivita save(AttivitaDTO attivitaDTO, MultipartFile file) throws IOException {
         Attivita attivita = new Attivita();
 
-        attivita.setDate(LocalDate.parse(attivitaDTO.data()));
+        if (LocalDate.now().isBefore(LocalDate.parse(attivitaDTO.data())) || LocalDate.now().isEqual(LocalDate.parse(attivitaDTO.data())) && LocalTime.now().isBefore(LocalTime.parse(attivitaDTO.oraInizio()))) {
+            attivita.setDate(LocalDate.parse(attivitaDTO.data()));
+        } else {
+            throw new AttivitaHasPassedException("Non puoi più inserire questa attività");
+        }
         attivita.setNome(attivitaDTO.nome());
         attivita.setLuogo(attivitaDTO.luogo());
         attivita.setDisponibilita(true);
@@ -192,5 +197,10 @@ public class AttivitaService {
 
     public Attivita findById(long id) {
         return attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+    }
+
+    public Page<Attivita> findAll(int page, int size, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), orderBy));
+        return attivitaRepository.findAll(pageable);
     }
 }

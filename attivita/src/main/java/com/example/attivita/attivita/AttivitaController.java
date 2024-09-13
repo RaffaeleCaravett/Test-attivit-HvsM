@@ -82,4 +82,9 @@ public class AttivitaController {
     public byte[] downloadFile(@PathVariable String name) throws IOException {
         return attivitaService.downloadFileFromName(name);
     }
+    @GetMapping("")
+    public Page<Attivita> getAllPaginated( @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy,@RequestParam(defaultValue = "DESC") String direction){
+        return attivitaService.findAll(page,size,orderBy,direction);
+    }
+
 }
