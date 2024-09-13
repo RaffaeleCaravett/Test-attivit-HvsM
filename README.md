@@ -19,4 +19,8 @@ C'è stato bisogno di usare l'annotazione @Transactional su repositories che con
 E' possibile inserire le immagini nelle attività e completare tutte le crud operations di base su tutti gli endpoint (Eccetto quelli per cui non era strettamente necessario)
 Ho utilizzato la ultima versione di Java e la 3.3.3 di Springboot.
 
+Ho utilizzato un file env.properties che è volutamente pushato su questo repository per utilizzare delle variabili d'ambiente nell'application.properties.
+Nella cartella docs si trova lo schema entità-relazioni (poi, in pratica, un po' modificato dall'originale)
+Ho versionato il codice cercando di utilizzare un branche per ogni entity o per ogni sezione dell'applicazione, mergiando poi quando ogni feature del relativo branch era finita.
+
 Mi è piaciuto molto sviluppare questo applicativo perchè si è dovuto tenere conto di alcune cose minuziose.
