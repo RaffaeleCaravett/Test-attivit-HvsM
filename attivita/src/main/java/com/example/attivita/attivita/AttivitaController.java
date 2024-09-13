@@ -2,6 +2,10 @@ package com.example.attivita.attivita;
 
 import com.example.attivita.exceptions.DTOHasErrorsException;
 import com.example.attivita.payloads.entities.AttivitaDTO;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/attivita")
@@ -20,11 +28,18 @@ public class AttivitaController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public Attivita save(@ModelAttribute @Validated AttivitaDTO attivitaDTO, BindingResult bindingResult,@RequestParam("image") MultipartFile file) throws IOException {
-        if(bindingResult.hasErrors()){
-            throw new DTOHasErrorsException(bindingResult.getAllErrors());
+    public Attivita save(@RequestParam("request") @ModelAttribute @Validated JSONObject attivitaDTO, @RequestParam("image") MultipartFile file) throws IOException {
+
+        List<Long> listdata = new ArrayList<Long>();
+        JSONArray jsonArray = (JSONArray)attivitaDTO.get("categorie_id");
+        if (jsonArray != null) {
+            for (int i=0;i<jsonArray.length();i++){
+                listdata.add(jsonArray.getLong(i));
+            }
         }
-        return attivitaService.save(attivitaDTO,file);
+        return attivitaService.save(new AttivitaDTO(attivitaDTO.get("nome").toString(),attivitaDTO.get("luogo").toString(),
+                attivitaDTO.get("data").toString(),attivitaDTO.get("oraInizio").toString(),attivitaDTO.get("oraFine").toString(),
+                (Integer) attivitaDTO.get("postiDisponibili"),listdata),file);
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")

@@ -10,11 +10,11 @@ public record AttivitaDTO(
        String nome,
        @NotEmpty(message = "Luogo vuoto.")
        String luogo,
-       @NotNull(message = "Data vuota.")
+       @NotEmpty(message = "Data vuota.")
        String data,
-       @NotNull(message = "Ora inizio vuota.")
+       @NotEmpty(message = "Ora inizio vuota.")
        String oraInizio,
-       @NotNull(message = "Ora fine vuota.")
+       @NotEmpty(message = "Ora fine vuota.")
        String oraFine,
        @NotNull(message = "Posti disponibili vuoti.")
        int postiDisponibili,

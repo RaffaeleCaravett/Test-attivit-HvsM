@@ -26,5 +26,6 @@ public class Prenotazione {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "attivita_id")
     private Attivita attivita;
+    @Enumerated(EnumType.STRING)
     private StatoPrenotazione statoPrenotazione;
 }

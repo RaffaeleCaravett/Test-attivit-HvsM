@@ -58,7 +58,7 @@ public class CategoriaService {
         return categoriaRepository.findById(id).orElseThrow(()-> new CategoriaNotFoundException("Categoria con id "+ id + " non trovata in db."));
     }
     public List<Categoria> findByNome(String nome){
-      return categoriaRepository.findByNomeContaining(nome);
+      return categoriaRepository.findByNomeContainingIgnoreCase(nome);
     }
     public List<Categoria> findByAttivitaId(long id){
         return categoriaRepository.findByAttivitaList_Id(id);

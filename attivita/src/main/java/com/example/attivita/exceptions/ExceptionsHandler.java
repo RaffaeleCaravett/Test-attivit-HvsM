@@ -2,16 +2,22 @@ package com.example.attivita.exceptions;
 
 import com.example.attivita.payloads.errors.ErrorsDTO;
 import com.example.attivita.payloads.errors.ErrorsWithListDTO;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
@@ -158,7 +164,42 @@ public class ExceptionsHandler {
         e.printStackTrace();
         return new ErrorsDTO(e.getMessage(), new Date());
     }
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    public ErrorsDTO handleAuthorizationDenied(MissingServletRequestPartException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    public ErrorsDTO handleAuthorizationDenied(DataIntegrityViolationException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    public ErrorsDTO handleAuthorizationDenied(NoResourceFoundException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    public ErrorsDTO handleAuthorizationDenied(MethodArgumentTypeMismatchException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
+
+
     @ExceptionHandler(Exception.class)
+    public ErrorsDTO handleGeneric(NoSuchElementException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
+    @ExceptionHandler(Exception.class)
+    public ErrorsDTO handleGeneric(IncorrectResultSizeDataAccessException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
+    }
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
     public ErrorsDTO handleGeneric(Exception e) {
         e.printStackTrace();

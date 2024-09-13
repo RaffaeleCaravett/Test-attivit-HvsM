@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,6 +30,7 @@ public class User implements UserDetails {
     private String cognome;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "tokens_id")
