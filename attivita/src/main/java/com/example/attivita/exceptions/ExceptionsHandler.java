@@ -3,6 +3,7 @@ package com.example.attivita.exceptions;
 import com.example.attivita.payloads.errors.ErrorsDTO;
 import com.example.attivita.payloads.errors.ErrorsWithListDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -59,6 +60,56 @@ public class ExceptionsHandler {
             return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
         }
     }
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
+    public ErrorsWithListDTO handlePNotFound(CategoriaNotFoundException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+    }
+    @ExceptionHandler(AttivitaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
+    public ErrorsWithListDTO handlePNotFound(AttivitaNotFoundException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+    }
+    @ExceptionHandler(AttivitaHasPassedException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
+    public ErrorsWithListDTO handlePNotFound(AttivitaHasPassedException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+    }
+    @ExceptionHandler(CategoriaAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
+    public ErrorsWithListDTO handlePNotFound(CategoriaAlreadyExistsException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+    }
+    @ExceptionHandler(PrenotazioneNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
+    public ErrorsWithListDTO handlePNotFound(PrenotazioneNotFoundException e) {
+        if (e.getMessageList() != null) {
+            List<String> errorsList = e.getMessageList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), errorsList);
+        } else {
+            return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+        }
+    }
     @ExceptionHandler(AccessTokenInvalidException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorsWithListDTO handleInvalidToken(AccessTokenInvalidException e) {
@@ -100,6 +151,12 @@ public class ExceptionsHandler {
             return new ErrorsWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
         }
 
+    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    public ErrorsDTO handleAuthorizationDenied(AuthorizationDeniedException e) {
+        e.printStackTrace();
+        return new ErrorsDTO(e.getMessage(), new Date());
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
