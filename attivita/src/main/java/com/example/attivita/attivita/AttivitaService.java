@@ -147,6 +147,9 @@ public class AttivitaService {
 
     public Attivita putImageById(long id, MultipartFile file) throws IOException {
         Attivita attivita = attivitaRepository.findById(id).orElseThrow(() -> new AttivitaNotFoundException("Attività con id " + id + " non trovata in db."));
+        String filePath = this.folder_path + file.getOriginalFilename();
+        FileData fileData = fileDataRepository.save(FileData.builder().name(file.getOriginalFilename()).type(file.getContentType()).filePath(filePath).build());
+        file.transferTo(new File(filePath));
         Immagine immagine = attivita.getImmagine();
         immagine.setName(file.getOriginalFilename());
         immagine.setType(file.getContentType());
